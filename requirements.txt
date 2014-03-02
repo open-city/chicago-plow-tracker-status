@@ -1,0 +1,4 @@
+Flask==0.10.1
+gunicorn==18.0
+requests==2.2.1
+flask_sqlalchemy==1.0
