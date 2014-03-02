@@ -104,7 +104,7 @@
       $.when( $.getJSON("/snow-plow-data/") ).then(function( data, textStatus, jqXHR ) {
 
         if (data['snow_plow_data'] == true)
-          $('#snow-plow-data').html('<span class="label label-success">Yes, ' + data['active_snow_plows']  + ' snow plows active</span>')
+          $('#snow-plow-data').html('<span class="label label-success">Yes, tracking ' + data['active_snow_plows']  + ' snow plows</span>')
         else
           $('#snow-plow-data').html('<span class="label label-danger">No</span>')
       });

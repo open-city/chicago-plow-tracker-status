@@ -1,5 +1,6 @@
 from flask import Flask, request, make_response, render_template
 from datetime import date, datetime, timedelta
+import pytz
 import json
 import requests
 import re
@@ -13,7 +14,7 @@ def plow_tracker_is_on():
     plow_page = requests.get('http://www.cityofchicago.org/content/city/en/depts/mayor/iframe/plow_tracker.html')
  
     if plow_page.status_code is 200:
-        plow_resp = {"date": str(datetime.now())}
+        plow_resp = {"date": str(datetime.now(pytz.timezone('US/Central')))}
         plow_resp["plow_tracker_is_on"] = len(re.findall('https://gisapps.cityofchicago.org/snowplows/', plow_page.content)) > 0
  
         resp = make_response(json.dumps(plow_resp))
@@ -32,7 +33,7 @@ def snow_plow_data():
     response = requests.post(gps_data_url, data=json.dumps(payload))
     
     if response.status_code is 200:
-        data_resp = {"date": str(datetime.now())}
+        data_resp = {"date": str(datetime.now(pytz.timezone('US/Central')))}
         data_resp['snow_plow_data'] = False
         data_resp['active_snow_plows'] = 0
 
@@ -40,7 +41,7 @@ def snow_plow_data():
           read_data = response.json()['TrackingResponse']['locationList']
 
           data_resp['active_snow_plows'] = len(read_data)
-          if len(read_data > 0):
+          if len(read_data) > 0:
             data_resp['snow_plow_data'] = True
         except:
           print "Failed to read data."
