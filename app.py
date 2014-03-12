@@ -11,11 +11,11 @@ app = Flask(__name__)
 # ROUTES
 @app.route('/plow-tracker-is-on/')
 def plow_tracker_is_on():
-    plow_page = requests.get('http://www.cityofchicago.org/content/city/en/depts/mayor/iframe/plow_tracker.html')
+    plow_page = requests.get('https://gisapps.cityofchicago.org/snowplows/')
  
     if plow_page.status_code is 200:
         plow_resp = {"date": str(datetime.now(pytz.timezone('US/Central')))}
-        plow_resp["plow_tracker_is_on"] = len(re.findall('https://gisapps.cityofchicago.org/snowplows/', plow_page.content)) > 0
+        plow_resp["plow_tracker_is_on"] = len(re.findall('images/PlowTracker-Activated.png', plow_page.content)) == 0
  
         resp = make_response(json.dumps(plow_resp))
     else: 
