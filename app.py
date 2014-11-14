@@ -28,8 +28,8 @@ def plow_tracker_is_on():
 def snow_plow_data():
 
     # The feed for City Of Chicago's Plow Data
-    gps_data_url = "https://gisapps.cityofchicago.org/snowplows/services/trackingservice/getPositions"
-    payload = {"TrackingInput":{"envelope":{"minX":0,"minY":0,"maxX":0,"maxY":0},"trackingDuration":15}}
+    gps_data_url = "https://gisapps.cityofchicago.org/PlowTrackerWeb/services/trackingservice/getPositions"
+    payload = {"TrackingInput":{"envelope":{"minX":0,"minY":0,"maxX":0,"maxY":0},"duration":0,"refresh":30}}
     response = requests.post(gps_data_url, data=json.dumps(payload))
     
     if response.status_code is 200:
