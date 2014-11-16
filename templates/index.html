@@ -39,11 +39,11 @@
           </thead>
           <tbody>
             <tr>
-              <td>Is the <a href='http://www.cityofchicago.org/city/en/depts/mayor/iframe/plow_tracker.html'>plow tracker</a> turned on?</td>
+              <td>Is the <a href='http://www.cityofchicago.org/city/en/depts/mayor/iframe/plow_tracker.html'>plow tracker</a> turned on? (<a class='small' href='/plow-tracker-is-on/'>API</a>)</td>
               <td id='plow-tracker-is-on'><span class="label label-default">Checking ...</span></td>
             </tr>
             <tr>
-              <td>Is there snow plow data?</td>
+              <td>Is there snow plow data? (<a class='small' href='/snow-plow-data/'>API</a>)</td>
               <td id='snow-plow-data'><span class="label label-default">Checking ...</span></td>
             </tr>
           </tbody>
@@ -97,15 +97,23 @@
         if (data['plow_tracker_is_on'] == true)
           $('#plow-tracker-is-on').html('<span class="label label-success">On</span>')
         else
-          $('#plow-tracker-is-on').html('<span class="label label-info">Off</span>')
+          $('#plow-tracker-is-on').html('<span class="label label-danger">Off</span>')
 
         $('#checked-at').html(moment(data['date']).format("MMM D, YYYY, h:mm:ss a"));
       });
 
       $.when( $.getJSON("/snow-plow-data/") ).then(function( data, textStatus, jqXHR ) {
 
-        if (data['snow_plow_data'] == true)
-          $('#snow-plow-data').html('<span class="label label-success">Yes, tracking ' + data['active_snow_plows']  + ' snow plows</span>')
+        if (data['data_present'] == true) {
+          var resp = '<p><span class="label label-success">Yes, tracking ' + data['asset_count']  + ' vehicles</span></p>';
+
+          resp += "<table class='table'><tbody>";
+          $.each(data['assets'], function(i, v){
+            resp += "<tr><td>" + data['assets'][i]['type'] + "</td><td>" + data['assets'][i]['count'] + "</td></tr>";
+          })
+          resp += "</tbody></table>";
+          $('#snow-plow-data').html(resp)
+        }
         else
           $('#snow-plow-data').html('<span class="label label-danger">No</span>')
       });
