@@ -51,8 +51,8 @@ def crossdomain(origin=None, methods=None, headers=None,
     return decorator
 
 # ROUTES
-@crossdomain(origin="*")
 @app.route('/plow-tracker-is-on/')
+@crossdomain(origin="*")
 def plow_tracker_is_on():
     plow_page = requests.get('https://gisapps.cityofchicago.org/PlowTrackerWeb/PlowTrackerAccess')
  
@@ -67,8 +67,8 @@ def plow_tracker_is_on():
     resp.headers['Content-Type'] = 'application/json'
     return resp
 
-@crossdomain(origin="*")
 @app.route('/snow-plow-data/')
+@crossdomain(origin="*")
 def snow_plow_data():
 
     # The feed for City Of Chicago's Plow Data
