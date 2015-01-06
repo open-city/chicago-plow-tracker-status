@@ -1,4 +1,5 @@
 from flask import Flask, request, make_response, render_template
+from flask.ext.cache import Cache
 from datetime import date, datetime, timedelta
 from functools import update_wrapper
 import pytz
@@ -8,6 +9,9 @@ import re
 import os
 
 app = Flask(__name__)
+cache = Cache(config={'CACHE_TYPE': 'simple'})
+cache.init_app(app)
+CACHE_TIMEOUT = 10 # 10 seconds
 
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
@@ -50,8 +54,16 @@ def crossdomain(origin=None, methods=None, headers=None,
         return update_wrapper(wrapped_function, f)
     return decorator
 
+def make_cache_key(*args, **kwargs):
+    path = request.path
+    args = str(hash(frozenset(request.args.items())))
+    # print 'cache_key:', (path+args)
+    print (path + args).encode('utf-8')
+    return (path + args).encode('utf-8')
+
 # ROUTES
 @app.route('/plow-tracker-is-on/')
+@cache.cached(timeout=CACHE_TIMEOUT, key_prefix=make_cache_key)
 @crossdomain(origin="*")
 def plow_tracker_is_on():
     plow_page = requests.get('https://gisapps.cityofchicago.org/PlowTrackerWeb/PlowTrackerAccess')
@@ -68,6 +80,7 @@ def plow_tracker_is_on():
     return resp
 
 @app.route('/snow-plow-data/')
+@cache.cached(timeout=CACHE_TIMEOUT, key_prefix=make_cache_key)
 @crossdomain(origin="*")
 def snow_plow_data():
 
